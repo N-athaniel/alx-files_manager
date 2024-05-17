@@ -76,3 +76,10 @@ const routeController = (app) => {
 
 // Export the route controller
 export default routeController;
+const express = require('express');
+const router = express.Router();
+const AppController = require('../controllers/AppController')
+
+router.get('/status', AppController.getStatus);
+router.get('/stats', AppController.getStats);
+module.exports = router;
