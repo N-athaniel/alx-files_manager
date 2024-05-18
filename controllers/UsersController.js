@@ -45,17 +45,14 @@ const UsersController = {
   async getMe(request, response) {
     try {
       // Getting the user's token from the request header
-      const userToken = request.header('X-Token');
+      const userToken = request.header['X-Token'];
       const authKey = `auth_${userToken}`;
-      // Getting the user's id from the redis client using the token
       const userID = await redisClient.get(authKey);
-      // If there is no user id, return an Unauthorized error
       if (!userID) {
         response.status(401).json({ error: 'Unauthorized' });
       }
       // Getting the user from the database using the id
       const user = await dbClient.getUser({ _id: ObjectId(userID) });
-      // Sending the user's id and email as a response
       response.json({ id: user._id, email: user.email });
     } catch (error) {
       // Logging any error that occurs
