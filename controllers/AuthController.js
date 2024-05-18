@@ -18,15 +18,8 @@ const AuthController = {
       // Decoding the authorization header and splitting it into email and password
       if (authHeader && authHeader.startsWith('Basic ')) {
         const credentials = authHeader.slice(6);
-	try {
-	  const buffer = Buffer.from(credentials, 'base64');
-	  const decodedCredentials = buffer.toString('utf-8');
-	}
-	catch(error) {
-	  if (error) {
-	    response.status(401).json({ error: 'Unauthorized' })
-	  }
-	}
+	const buffer = Buffer.from(credentials, 'base64');
+	const decodedCredentials = buffer.toString('utf-8');
 	const credentialList = decodedCredentials.split(':');
 	const email = credentialList[0];
 	const password = credentialList[1]
