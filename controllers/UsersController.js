@@ -1,44 +1,33 @@
-// Importing the sha1 hashing function
 import sha1 from 'sha1';
 // Importing the ObjectId function from the mongodb package to handle MongoDB's unique identifiers
 import { ObjectId } from 'mongodb';
-// Importing the database client from the utils directory
 import dbClient from '../utils/db';
-// Importing the redis client from the utils directory
 import redisClient from '../utils/redis';
 
-// Defining the UsersController class
-class UsersController {
+const UsersController = {
   // Method to create a new user
-  static async postNew (request, response) {
-    // Destructuring the email and password from the request body
+  async postNew (request, response) {
     const { email, password } = request.body;
-    // If there is no email in the request body, return a Missing email error
     if (!email) {
       response.status(400).json({ error: 'Missing email' });
     }
-    // If there is no password in the request body, return a Missing password error
     if (!password) {
       response.status(400).json({ error: 'Missing password' });
     }
-
-    // Hashing the password using sha1
     const hashPwd = sha1(password);
 
     try {
       // Getting the users collection from the database
-      const collection = dbClient.db.collection('users');
+      const userCollection = dbClient.db.collection('users');
       // Finding a user in the database with the same email
-      const user1 = await collection.findOne({ email });
+      const user1 = await userCollection.findOne({ email });
 
-      // If there is a user with the same email, return an Already exist error
       if (user1) {
         response.status(400).json({ error: 'Already exist' });
       } else {
-        // Inserting a new user into the database with the email and hashed password
-        collection.insertOne({ email, password: hashPwd });
+        userCollection.insertOne({ email, password: hashPwd });
         // Finding the new user in the database
-        const newUser = await collection.findOne(
+        const newUser = await userCollection.findOne(
           { email }, { projection: { email: 1 } }
         );
         // Sending the new user's id and email as a response
@@ -50,10 +39,10 @@ class UsersController {
       // Sending a Server error response
       response.status(500).json({ error: 'Server error' });
     }
-  }
+  },
 
   // Method to get the current user
-  static async getMe (request, response) {
+  async getMe (request, response) {
     try {
       // Getting the user's token from the request header
       const userToken = request.header('X-Token');
@@ -77,5 +66,4 @@ class UsersController {
   }
 }
 
-// Exporting the UsersController class as a module
-export default UsersController;
+module.exports = UsersController;
