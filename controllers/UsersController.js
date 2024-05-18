@@ -6,13 +6,13 @@ import redisClient from '../utils/redis';
 
 const UsersController = {
   // Method to create a new user
-  async postNew (request, response) {
+  async postNew(request, response) {
     const { email, password } = request.body;
     if (!email) {
       response.status(400).json({ error: 'Missing email' });
     }
     if (!password) {
-      response.status(400).json({ error: 'Missing password' });
+      return response.status(400).json({ error: 'Missing password' });
     }
     const hashPwd = sha1(password);
 
@@ -42,7 +42,7 @@ const UsersController = {
   },
 
   // Method to get the current user
-  async getMe (request, response) {
+  async getMe(request, response) {
     try {
       // Getting the user's token from the request header
       const userToken = request.header('X-Token');
