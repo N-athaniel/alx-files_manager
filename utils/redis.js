@@ -1,5 +1,5 @@
-import {createClient} from 'redis'
-import {promisify} from 'util'
+const createClient = require('redis').createClient;
+const promisify = require('util').promisify
 /* creating a class that can interact with redis */
 
 class RedisClient {
@@ -29,4 +29,4 @@ class RedisClient {
 
 }
 const redisClient = new RedisClient();
-export default redisClient;
+module.exports = redisClient;
