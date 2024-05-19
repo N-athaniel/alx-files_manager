@@ -18,7 +18,7 @@ const FilesController = {
     }
     const payload = req.body;
     const acceptedTypes = ['folder', 'file', 'image'];
-    const {name, type, data, parentId = '0', isPublic = false } = payload;
+    const {name, type, data, parentId = 0, isPublic = false } = payload;
     const collection =  await dbClient.db.collection('files');
     let correctType;
     if (acceptedTypes.includes(type)) {
@@ -36,7 +36,7 @@ const FilesController = {
     if (! data && type != 'folder') { 
       return res.status(400).json({ "error": "Missing data" })
     };
-    if (parentId !== '0') {
+    if (parentId !== 0) {
       const parentFolder = await collection.findOne({ _id: new ObjectId(parentId) });
       if (! parentFolder) {
         return res.status(400).json({ "error": "Parent not found" });
