@@ -69,7 +69,7 @@ const FilesController = {
       console.log('an error occured while attempting to write data to a file', error);
     }
   })
-  if (newFile.typ != 'folder') {
+  if (newFile.type != 'folder') {
     newFile.localPath = fullPath
     await collection.insertOne(newFile);
     res.status(201);
