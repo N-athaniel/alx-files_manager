@@ -22,7 +22,10 @@ const AuthController = {
 	const decodedCredentials = buffer.toString('utf-8');
 	const credentialList = decodedCredentials.split(':');
 	const email = credentialList[0];
-	const password = credentialList[1]
+	const password = credentialList[1];
+	if (!email || !password) {
+	  return response.status(401).json({ error: 'Unauthorized' });
+	}
 	const hashpw = sha1(password);
 	const user = await dbClient.getUser({ "email": email, "password": hashpw });
 	if (!user) {
