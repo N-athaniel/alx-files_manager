@@ -37,7 +37,7 @@ const FilesController = {
       return res.status(400).json({ "error": "Missing data" })
     };
     if (parentId !== '0') {
-      const parentFolder = collection.findOne({ _id: new ObjectId(parentId) });
+      const parentFolder = await collection.findOne({ _id: new ObjectId(parentId) });
       if (! parentFolder) {
         return res.status(400).json({ "error": "Parent not found" });
       }
