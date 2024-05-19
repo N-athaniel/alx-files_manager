@@ -6,19 +6,19 @@ import fs from 'fs'
 
 const FilesController = {
   async postUpload (req, res)  {
-    const token = req.headers['X-Token'];
+    const token = req.headers['x-token'] || req.headers['X-Token'];
     if (! token) {
       return res.status(401).json({ "error" : "Unauthorized" });
     }
     const key = `auth_${token}`;
     const userId = await redisClient.get(key);
-    const user = await dbClient.getUser({"_id": userId});
+    const user = await dbClient.getUser({"_id": new ObjectId(userId)});
     if (! user) {
       return res.status(401).json({ "error": "Unauthorized" });
     }
     const payload = req.body;
     const acceptedTypes = ['folder', 'file', 'image'];
-    const {name, type, data, parentId = '0', isPublic = 'false' } = payload;
+    const {name, type, data, parentId = '0', isPublic = false } = payload;
     const collection =  await dbClient.db.collection('files');
     let correctType;
     if (acceptedTypes.includes(type)) {
@@ -57,13 +57,16 @@ const FilesController = {
     await collection.insertOne(newFile);
     return res.status(201).json(newFile);
   }
-  const path = process.env.FOLDER_PATH || '/tmp/files_manager';
-  const uniqueId = uuidv4();
-  const fullPath = `${path}/${uniqueId}`
+  const folderPath = process.env.FOLDER_PATH || '/tmp/files_manager';
+  const path = uuidv4();
+  const fullPath = `${folderPath}/${path}`;
+  if (! fs.existsSync(folderPath)) {
+    fs.mkdirSync(folderPath);
+  }
   const fileData = Buffer.from(newFile.data, 'base64');
   fs.writeFile(fullPath, fileData, (error) => {
     if (error) {
-      console.log('an error occured while attempting to write data to a file');
+      console.log('an error occured while attempting to write data to a file', error);
     }
   })
   if (newFile.typ != 'folder') {
