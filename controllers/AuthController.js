@@ -24,7 +24,7 @@ const AuthController = {
 	const email = credentialList[0];
 	const password = credentialList[1]
 	const hashpw = sha1(password);
-	const user = await dbClient.getUser({ "email": email });
+	const user = await dbClient.getUser({ "email": email, "password": hashpw });
 	if (!user) {
           response.json({"error": "Unauthorized"});
 	};
