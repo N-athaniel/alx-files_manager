@@ -56,12 +56,12 @@ const AuthController = {
       const userToken = request.header['X-Token'];
       const userKey = await redisClient.get(`auth_${userToken}`);
       if (!userKey) {
-        response.status(401).json({ error: 'Unauthorized' });
+        return response.status(401).json({ error: 'Unauthorized' });
       }
       // Deleting the user's token from the redis client
       await redisClient.del(`auth_${userToken}`);
       // Sending a Disconnected response
-      response.status(204).send();
+      return response.status(204).send();
     } catch (err) {
       // Logging any error that occurs
       console.log(err);
