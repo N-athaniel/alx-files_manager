@@ -53,7 +53,7 @@ const AuthController = {
   async getDisconnect (request, response) {
     try {
       // Getting the user's token from the request header
-      const userToken = request.header['X-Token'];
+      const userToken = request.header['X-Token'] || request.header['x-Token']
       const userKey = await redisClient.get(`auth_${userToken}`);
       if (!userKey) {
         return response.status(401).json({ error: 'Unauthorized' });
