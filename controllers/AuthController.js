@@ -29,7 +29,7 @@ const AuthController = {
 	const hashpw = sha1(password);
 	const user = await dbClient.getUser({ "email": email, "password": hashpw });
 	if (!user) {
-          return response.json({"error": "Unauthorized"});
+          return response.status(401).json({ "error": "Unauthorized" });
 	};
         if (hashpw !== user.password) {
         response.status(401).json({ error: 'Unauthorized' });
